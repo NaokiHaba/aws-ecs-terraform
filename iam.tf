@@ -29,7 +29,7 @@ data "aws_iam_policy_document" "ecs_task_execution_policy" {
 # ECS用のIAMロールを作成
 resource "aws_iam_role" "ecs" {
   name               = "${local.app}-ecs" # アプリケーション名を含むロール名を設定
-  assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
+  assume_role_policy = data.aws_iam_policy_document.ecs_task_assume.json
 }
 
 # ECSタスク実行ロールにAmazonECSTaskExecutionRolePolicyをアタッチ
