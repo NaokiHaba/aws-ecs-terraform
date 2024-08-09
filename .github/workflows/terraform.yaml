@@ -9,7 +9,7 @@ on:
       - main
 
 env:
-  OIDC_ARN: arn:aws:i
+  OIDC_ARN: arn:aws:iam::533267095025:role/GitHubActionsOIDC
   
 permissions:
   id-token: write # OIDCの認証のため
