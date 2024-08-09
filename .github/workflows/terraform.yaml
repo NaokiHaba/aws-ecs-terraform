@@ -67,4 +67,4 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: tfcmt apply -- terraform apply -no-color -input=false
+        run: tfcmt apply -- terraform apply -auto-approve -no-color -input=false
