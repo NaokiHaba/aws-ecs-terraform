@@ -1,5 +1,9 @@
+# Terraform CI/CDワークフロー
+# このワークフローはTerraformを使用してインフラストラクチャを管理する
 name: Terraform CI/CD
 
+# ワークフローのトリガー設定
+# メインブランチへのプッシュとプルリクエストでワークフローを実行する
 on:
   push:
     branches:
@@ -8,22 +12,28 @@ on:
     branches:
       - main
 
+# 環境変数の設定
+# OIDC_ARNはAWSとの認証に使用するIAMロールのARN
 env:
   OIDC_ARN: arn:aws:iam::533267095025:role/GitHubActionsOIDC
   
+# GitHub Actionsの権限設定
 permissions:
-  id-token: write # OIDCの認証のため
-  contents: read # リポジトリの読み取りのため
-  pull-requests: write # プルリクエストのコメントのため
+  id-token: write # OpenID Connect (OIDC)を使用してAWSに認証するために必要
+  contents: read # リポジトリのコンテンツを読み取るために必要
+  pull-requests: write # プルリクエストにコメントを追加するために必要
 
+# ジョブの定義
 jobs:
   terraform:
     runs-on: ubuntu-latest
     steps:
+      # リポジトリのコードをチェックアウト
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # tfcmtのインストール（tfcmtはTerraformの結果をGithub にコメントするためのツール）
+      # tfcmt（Terraform Comment Tool）のインストール
+      # tfcmtはTerraformの実行結果をGitHubのプルリクエストにコメントとして追加するツール
       - name: Setup tfcmt
         env:
           TFCMT_VERSION: v4.0.0
@@ -33,25 +43,34 @@ jobs:
           mv /tmp/tfcmt /usr/local/bin
           tfcmt --version
       
-      # IAMロールのAssume
+      # AWS認証情報の設定
+      # OIDCを使用してGitHub ActionsからAWSリソースにアクセスするための設定
       - name: Assume role
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.OIDC_ARN }}
           aws-region: ap-northeast-1
 
+      # Terraformコードのフォーマットチェック
+      # コードが正しくフォーマットされているか確認する
       - name: Terraform Format
         id: fmt
         run: terraform fmt -check
 
+      # Terraformの初期化
+      # プロバイダーのダウンロードやバックエンドの設定を行う
       - name: Terraform init
         id: init
         run: terraform init
 
+      # Terraformコードの検証
+      # 構文エラーや設定の問題がないか確認する
       - name: Terraform validate
         id: validate
         run: terraform validate -no-color
 
+      # プルリクエスト時のTerraform計画（プラン）の実行
+      # 変更内容をプレビューし、結果をプルリクエストにコメントとして追加する
       - name: Terraform plan
         id: plan
         if: github.event_name == 'pull_request'
@@ -59,10 +78,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: tfcmt plan -patch -- terraform plan -no-color -input=false
 
+      # Terraform計画の結果チェック
+      # プランが失敗した場合、ワークフローを停止する
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
         run: exit 1
       
+      # メインブランチへのプッシュ時のTerraform適用（アプライ）
+      # 実際にインフラストラクチャの変更を適用する
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         env:
