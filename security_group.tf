@@ -19,7 +19,7 @@ resource "aws_security_group" "alb" {
   }
 
   # アウトバウンドルールの設定
-  egress = {
+  egress {
     # すべてのポート（0-65535）とプロトコルを許可
     from_port = 0
     to_port   = 0
