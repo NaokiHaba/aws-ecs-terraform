@@ -43,11 +43,11 @@ resource "aws_lb_listener_rule" "alb_listener_rule" {
 
 # ALBターゲットグループの設定
 resource "aws_lb_target_group" "alb_target_group" {
-  name        = "${local.app}-alb-target-group" # ターゲットグループの名前をアプリケーション名を含めて設定
-  port        = 8080                            # ターゲットグループのポートを8080に設定
-  protocol    = "HTTP"                          # ターゲットグループのプロトコルをHTTPに設定
-  target_type = "ip"                            # ターゲットタイプをIPアドレスに設定（ECS Fargateで使用）
-  vpc_id      = module.vpc.vpc_id               # ターゲットグループを配置するVPCを指定
+  name        = "${local.app}-target-group" # ターゲットグループの名前をアプリケーション名を含めて設定
+  port        = 8080                        # ターゲットグループのポートを8080に設定
+  protocol    = "HTTP"                      # ターゲットグループのプロトコルをHTTPに設定
+  target_type = "ip"                        # ターゲットタイプをIPアドレスに設定（ECS Fargateで使用）
+  vpc_id      = module.vpc.vpc_id           # ターゲットグループを配置するVPCを指定
 
   # ヘルスチェックの設定
   health_check {
