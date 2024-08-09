@@ -21,7 +21,7 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
   # タスク実行ロールとタスクロールのARNを指定
   # これらのロールはタスクの実行とタスク内のアプリケーションに必要な権限を提供します
   execution_role_arn = aws_iam_role.ecs.arn
-  task_role_arn      = aws_iam_role.ecs_task.arn
+  task_role_arn      = aws_iam_role.ecs_task_execution_role.arn
 
   # コンテナ定義をJSON形式で指定
   # これはタスク内で実行されるコンテナの詳細な設定を定義します
