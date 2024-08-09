@@ -4,7 +4,7 @@ terraform {
     bucket         = "aws-ecs-terraform-tfstate-2"
     key            = "terraform.tfstate"
     region         = "ap-northeast-1"
-    dynamodb_table = "terraform-state-lock-dynamo"
+    dynamodb_table = "aws-ecs-terraform-tfstate-locking"
     encrypt        = true
   }
 }
