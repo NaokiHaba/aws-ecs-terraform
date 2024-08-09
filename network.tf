@@ -15,7 +15,7 @@ module "vpc" {
 
   # 利用可能なアベイラビリティーゾーンを指定（aとc）
   # 高可用性を確保するため、複数のAZを使用
-  azs             = ["${local.region}a", "${local.region}c"]
+  azs = ["${local.region}a", "${local.region}c"]
 
   # プライベートサブネットのCIDRブロックを指定
   # 各サブネットは /24 で、256個のIPアドレスを提供
@@ -23,11 +23,11 @@ module "vpc" {
 
   # パブリックサブネットのCIDRブロックを指定
   # 各サブネットは /24 で、256個のIPアドレスを提供
-  public_subnets  = ["10.0.101.0/24", "10.0.102.0/24"]
+  public_subnets = ["10.0.101.0/24", "10.0.102.0/24"]
 
   # パブリックサブネットの名前を指定
   # 明示的な名前付けにより、AWSコンソールでの識別が容易になる
-  public_subnet_names  = ["aws-ecs-terraform-public-subnet-1", "aws-ecs-terraform-public-subnet-2"]
+  public_subnet_names = ["aws-ecs-terraform-public-subnet-1", "aws-ecs-terraform-public-subnet-2"]
 
   # プライベートサブネットの名前を指定
   # 明示的な名前付けにより、AWSコンソールでの識別が容易になる
@@ -40,9 +40,9 @@ module "vpc" {
   # NATゲートウェイの有効化
   # プライベートサブネット内のリソースがインターネットにアクセスできるようにする
   # 注意: コストが発生するため、開発環境では無効にすることを検討
-  enable_nat_gateway   = true
+  enable_nat_gateway = true
 
   # DNSサポートの有効化
   # VPC内のDNS解決を可能にし、Route 53 プライベートホストゾーンの使用を可能にする
-  enable_dns_support   = true
+  enable_dns_support = true
 }
